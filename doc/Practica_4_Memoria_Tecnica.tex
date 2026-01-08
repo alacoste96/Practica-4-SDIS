@@ -1,0 +1,595 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{booktabs}
+
+\geometry{margin=2.5cm}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    commentstyle=\color{green!60!black},
+    keywordstyle=\color{blue},
+    stringstyle=\color{red}
+}
+
+\title{\textbf{Memoria Técnica: Práctica 4 SDIS}\\
+\Large{Sistema de Gestión de Taller con Concurrencia en Go}}
+\author{Práctica 4 - Sistemas Distribuidos}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introducción}
+
+Este documento presenta la memoria técnica de la Práctica 4 de Sistemas Distribuidos, en la que se ha desarrollado un sistema concurrente en Go para la gestión de un taller mecánico. El sistema modela el flujo completo de reparación de vehículos, desde su entrada hasta su entrega, utilizando mecanismos avanzados de concurrencia como goroutines, canales y primitivas de sincronización.
+
+El proyecto implementa un modelo cliente-servidor donde:
+\begin{itemize}
+    \item \textbf{Servidor}: Gestiona las conexiones y actúa como broadcaster de información.
+    \item \textbf{Cliente (Taller)}: Implementa la lógica del taller con múltiples fases de procesamiento.
+    \item \textbf{Mutua}: Programa externo que envía comandos de cambio de estado al sistema.
+\end{itemize}
+
+\subsection{Objetivos del Proyecto}
+
+\begin{enumerate}
+    \item Implementar un sistema concurrente robusto utilizando Go y sus primitivas de concurrencia.
+    \item Gestionar el flujo de vehículos a través de 4 fases secuenciales con prioridades dinámicas.
+    \item Implementar comunicación cliente-servidor mediante sockets TCP.
+    \item Garantizar la sincronización correcta evitando race conditions.
+    \item Validar el sistema mediante tests exhaustivos.
+\end{enumerate}
+
+\section{Arquitectura del Sistema}
+
+\subsection{Estructura General}
+
+El sistema está organizado en tres módulos principales:
+
+\begin{itemize}
+    \item \textbf{servidor.go}: Servidor TCP que gestiona conexiones y broadcasting.
+    \item \textbf{taller.go}: Cliente principal que implementa la lógica del taller.
+    \item \textbf{mutua.go}: Cliente simulador que envía comandos de cambio de estado.
+\end{itemize}
+
+Adicionalmente, el módulo \texttt{cliente} contiene los siguientes archivos de soporte:
+
+\begin{itemize}
+    \item \textbf{types.go}: Definiciones de tipos de datos y constantes.
+    \item \textbf{utility.go}: Funciones auxiliares y lógica de gestión de prioridades.
+    \item \textbf{goroutines.go}: Funciones que implementan las goroutines del sistema.
+    \item \textbf{mutex.go}: Métodos protegidos por RWMutex para acceso concurrente.
+    \item \textbf{taller\_test.go}: Suite de tests para validación del sistema.
+\end{itemize}
+
+\subsection{Diagrama de Arquitectura}
+
+% PLACEHOLDER: Aquí se incluirá el diagrama de arquitectura general
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.9\textwidth]{diagrama_arquitectura.pdf}
+%     \caption{Diagrama de arquitectura del sistema}
+%     \label{fig:arquitectura}
+% \end{figure}
+
+\textbf{Nota}: Insertar aquí el diagrama \texttt{diagrama\_arquitectura.drawio} exportado a PDF.
+
+\section{Descripción Detallada de Componentes}
+
+\subsection{Servidor (servidor.go)}
+
+El servidor implementa un patrón broadcaster simple pero efectivo:
+
+\begin{itemize}
+    \item Escucha en \texttt{localhost:8000}
+    \item Mantiene un mapa de clientes conectados
+    \item Redistribuye mensajes recibidos a todos los clientes
+    \item Gestiona entrada y salida de clientes mediante canales
+\end{itemize}
+
+El servidor actúa como intermediario de comunicación entre la mutua y el taller, asegurando que todos los cambios de estado sean transmitidos correctamente.
+
+\subsection{Cliente Taller (taller.go)}
+
+Es el componente principal del sistema. Su función \texttt{main()} realiza las siguientes tareas:
+
+\begin{enumerate}
+    \item Inicializa el garage con capacidad definida (10 plazas).
+    \item Genera un pool de 30 coches con distribución aleatoria de categorías.
+    \item Configura 4 trabajadores por tipo de fase (documentación, reparación, limpieza, entrega).
+    \item Establece conexión TCP con el servidor.
+    \item Lanza goroutines para cada fase del proceso.
+    \item Inicia el productor de coches.
+    \item Lee continuamente mensajes del servidor para actualizar el estado.
+\end{enumerate}
+
+\subsection{Gestión de Concurrencia}
+
+\subsubsection{Estructura Garage}
+
+La estructura \texttt{Garage} centraliza el estado compartido:
+
+\begin{lstlisting}[language=Go]
+type Garage struct {
+    mu        sync.RWMutex
+    cars      map[int]*Car
+    sts       atomic.Int32
+    freeSlots chan struct{}
+    wg        sync.WaitGroup
+}
+\end{lstlisting}
+
+\begin{itemize}
+    \item \texttt{mu}: Protege el acceso al mapa de coches.
+    \item \texttt{cars}: Mapa de coches actualmente en el taller.
+    \item \texttt{sts}: Estado atómico del taller (modo de operación).
+    \item \texttt{freeSlots}: Canal bufferizado que implementa semáforo para plazas.
+    \item \texttt{wg}: WaitGroup para sincronización de finalización.
+\end{itemize}
+
+\subsubsection{Canales de Comunicación}
+
+El sistema utiliza canales para comunicación entre fases:
+
+\begin{itemize}
+    \item \textbf{Canal de entrada}: Cada fase tiene 3 canales (uno por prioridad).
+    \item \textbf{Canal de salida}: Conecta con la siguiente fase.
+    \item \textbf{Canal de eventos}: Centraliza logs en una única goroutine.
+    \item \textbf{Canal de stop}: Señaliza terminación de goroutines.
+\end{itemize}
+
+\subsection{Fases del Proceso}
+
+El sistema implementa 4 fases secuenciales:
+
+\begin{enumerate}
+    \item \textbf{Documentación (Fase 1)}: Preparación de papeles. Limitada por plazas disponibles.
+    \item \textbf{Reparación (Fase 2)}: Arreglo del vehículo. Limitada por número de mecánicos (4).
+    \item \textbf{Limpieza (Fase 3)}: Preparación para entrega. Limitada por plazas.
+    \item \textbf{Entrega (Fase 4)}: Entrega final al cliente. Al terminar, libera la plaza.
+\end{enumerate}
+
+\subsection{Sistema de Prioridades}
+
+\subsubsection{Categorías de Coches}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Categoría} & \textbf{Tipo} & \textbf{Prioridad} & \textbf{Duración} \\ \hline
+A & Mecánica & Alta & 5s + variación \\ \hline
+B & Eléctrica & Media & 3s + variación \\ \hline
+C & Carrocería & Baja & 1s + variación \\ \hline
+\end{tabular}
+\caption{Categorías de vehículos}
+\label{tab:categorias}
+\end{table}
+
+\subsubsection{Modos de Operación}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|l|p{8cm}|}
+\hline
+\textbf{Modo} & \textbf{Estado} & \textbf{Descripción} \\ \hline
+0 & Taller Inactivo & No entran coches nuevos, se gestionan los existentes \\ \hline
+1 & Solo Categoría A & Solo entran coches de categoría A \\ \hline
+2 & Solo Categoría B & Solo entran coches de categoría B \\ \hline
+3 & Solo Categoría C & Solo entran coches de categoría C \\ \hline
+4 & Prioridad A & Se priorizan coches A en todas las fases \\ \hline
+5 & Prioridad B & Se priorizan coches B en todas las fases \\ \hline
+6 & Prioridad C & Se priorizan coches C en todas las fases \\ \hline
+7 & No definido & Mantiene el modo anterior \\ \hline
+8 & No definido & Mantiene el modo anterior \\ \hline
+9 & Taller Cerrado & No entran coches nuevos, se gestionan los existentes \\ \hline
+\end{tabular}
+\caption{Modos de operación del taller}
+\label{tab:modos}
+\end{table}
+
+\textbf{Comportamiento por tipo de modo}:
+
+\begin{itemize}
+    \item \textbf{Modos 1-3 (restrictivos)}: Solo afectan a la entrada de coches nuevos. Los coches que ya están dentro continúan siendo procesados normalmente.
+    \item \textbf{Modos 4-6 (prioridades)}: Afectan a todos los coches, incluidos los que ya están dentro. Cambian dinámicamente el orden de atención en todas las fases.
+    \item \textbf{Modos 0 y 9}: No permiten entrada de coches nuevos, pero los coches dentro siguen siendo gestionados.
+    \item \textbf{Modos 7 y 8}: No modifican el estado, mantienen el modo activo previamente.
+\end{itemize}
+
+\section{Diagramas UML}
+
+Esta sección presenta los diagramas UML que ilustran el comportamiento y la estructura del sistema.
+
+\subsection{Diagrama de Secuencia: Flujo Completo de un Coche}
+
+% PLACEHOLDER: Diagrama de secuencia completo
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=\textwidth]{diagrama_secuencia_completo.pdf}
+%     \caption{Diagrama de secuencia: Flujo completo de un coche por las 4 fases}
+%     \label{fig:seq_completo}
+% \end{figure}
+
+\textbf{Nota}: Insertar aquí el diagrama \texttt{diagrama\_secuencia\_completo.drawio} exportado a PDF.
+
+Este diagrama muestra la interacción entre:
+\begin{itemize}
+    \item Productor
+    \item Garage (estructura compartida)
+    \item Workers de cada fase (Documentación, Reparación, Limpieza, Entrega)
+    \item Logger
+    \item Canales de comunicación
+\end{itemize}
+
+\subsection{Diagrama de Secuencia: Comunicación Cliente-Servidor}
+
+% PLACEHOLDER: Diagrama de comunicación cliente-servidor
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.8\textwidth]{diagrama_secuencia_cliente_servidor.pdf}
+%     \caption{Diagrama de secuencia: Comunicación cliente-servidor}
+%     \label{fig:seq_cliente_servidor}
+% \end{figure}
+
+\textbf{Nota}: Insertar aquí el diagrama \texttt{diagrama\_secuencia\_cliente\_servidor.drawio} exportado a PDF.
+
+Este diagrama ilustra:
+\begin{itemize}
+    \item Conexión inicial entre Mutua, Servidor y Taller
+    \item Broadcasting de mensajes
+    \item Actualización de estado en el taller
+\end{itemize}
+
+\subsection{Diagrama de Flujo: Gestión de Prioridades}
+
+% PLACEHOLDER: Diagrama de flujo de prioridades
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.7\textwidth]{diagrama_flujo_prioridades.pdf}
+%     \caption{Diagrama de flujo: Lógica de gestión de prioridades}
+%     \label{fig:flujo_prioridades}
+% \end{figure}
+
+\textbf{Nota}: Insertar aquí el diagrama \texttt{diagrama\_flujo\_prioridades.drawio} exportado a PDF.
+
+Este diagrama muestra el algoritmo de decisión para:
+\begin{itemize}
+    \item Selección de coches según el modo activo
+    \item Priorización en la cola de entrada
+    \item Gestión de workers según prioridades
+\end{itemize}
+
+\subsection{Diagrama de Flujo: Worker de Fase}
+
+% PLACEHOLDER: Diagrama de flujo de worker
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.6\textwidth]{diagrama_flujo_worker.pdf}
+%     \caption{Diagrama de flujo: Comportamiento de un worker}
+%     \label{fig:flujo_worker}
+% \end{figure}
+
+\textbf{Nota}: Insertar aquí el diagrama \texttt{diagrama\_flujo\_worker.drawio} exportado a PDF.
+
+\section{Implementación de Concurrencia}
+
+\subsection{Goroutines del Sistema}
+
+El sistema lanza múltiples goroutines concurrentes:
+
+\begin{itemize}
+    \item \textbf{1 Logger}: Única goroutine con permiso de escritura en stdout.
+    \item \textbf{1 Productor}: Gestiona la entrada de coches al sistema.
+    \item \textbf{10 Workers de Documentación}: Uno por plaza disponible.
+    \item \textbf{4 Workers de Reparación}: Uno por mecánico.
+    \item \textbf{10 Workers de Limpieza}: Uno por plaza.
+    \item \textbf{10 Workers de Entrega}: Uno por plaza.
+    \item \textbf{1 Lector de Servidor}: Lee comandos del servidor.
+\end{itemize}
+
+\textbf{Total}: 37 goroutines concurrentes en el caso base.
+
+\subsection{Sincronización y Seguridad}
+
+\subsubsection{RWMutex para Acceso al Mapa}
+
+Las operaciones sobre el mapa de coches están protegidas:
+
+\begin{lstlisting}[language=Go]
+func (g *Garage) signInCar(c *Car) {
+    g.mu.Lock()
+    defer g.mu.Unlock()
+    g.cars[c.id] = c
+}
+
+func (g *Garage) updatePhase(id int, phase int) {
+    g.mu.Lock()
+    defer g.mu.Unlock()
+    if c, ok := g.cars[id]; ok {
+        c.curphase = phase
+    }
+}
+
+func (g *Garage) delCar(id int) {
+    g.mu.Lock()
+    defer g.mu.Unlock()
+    delete(g.cars, id)
+}
+\end{lstlisting}
+
+\subsubsection{Atomic Int32 para Estado}
+
+El estado del taller se gestiona mediante operaciones atómicas:
+
+\begin{lstlisting}[language=Go]
+// Lectura atómica
+mode := g.sts.Load()
+
+// Escritura atómica
+g.sts.Store(int32(sts))
+\end{lstlisting}
+
+\subsubsection{Canal Bufferizado como Semáforo}
+
+Las plazas libres se gestionan mediante un canal bufferizado:
+
+\begin{lstlisting}[language=Go]
+// Inicialización
+freeSlots: make(chan struct{}, numSlots)
+
+// Ocupar plaza (bloquea si no hay disponibles)
+<-g.freeSlots
+
+// Liberar plaza
+g.freeSlots <- struct{}{}
+\end{lstlisting}
+
+\subsection{Patrón Select para Priorización}
+
+La función \texttt{getCar()} implementa priorización mediante select anidados:
+
+\begin{lstlisting}[language=Go]
+select {
+case c = <-chans[high]:  // Prioridad alta
+default:
+    select {
+    case c = <-chans[medium]:  // Prioridad media
+    default:
+        select {
+        case c = <-chans[high]:
+        case c = <-chans[medium]:
+        case c = <-chans[low]:   // Prioridad baja
+        case <-stop:             // Señal de terminación
+            return nil
+        }
+    }
+}
+\end{lstlisting}
+
+\section{Tests y Resultados}
+
+\subsection{Estrategia de Testing}
+
+Los tests implementados validan:
+
+\begin{enumerate}
+    \item \textbf{Corrección funcional}: El sistema procesa correctamente todos los coches.
+    \item \textbf{Ausencia de race conditions}: Ejecutados con \texttt{-race}.
+    \item \textbf{Cobertura de código}: Medida con \texttt{-cover}.
+    \item \textbf{Rendimiento}: Comparación de tiempos entre configuraciones.
+\end{enumerate}
+
+\textbf{Importante}: Los tests \textbf{no} evalúan los archivos \texttt{mutua.go} ni \texttt{servidor.go}, solo el módulo \texttt{cliente}. Los tests miden la robustez del sistema en modo 4 (prioridad categoría A) y realizan comparativas a partir de ahí.
+
+\subsection{Configuración de Tests}
+
+Se ejecutaron 6 tests combinando:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{Test} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{Plazas} & \textbf{Mecánicos} \\ \hline
+T1 & 10 & 10 & 10 & 6 & 3 \\ \hline
+T2 & 20 & 5 & 5 & 6 & 3 \\ \hline
+T3 & 5 & 5 & 20 & 6 & 3 \\ \hline
+T4 & 10 & 10 & 10 & 4 & 4 \\ \hline
+T5 & 20 & 5 & 5 & 4 & 4 \\ \hline
+T6 & 5 & 5 & 20 & 4 & 4 \\ \hline
+\end{tabular}
+\caption{Configuraciones de tests}
+\label{tab:config_tests}
+\end{table}
+
+Cada test se ejecutó 10 iteraciones con semilla aleatoria variable. Los tiempos están reescalados (1 segundo real = 100ms en test).
+
+\subsection{Resultados de Tests}
+
+\subsubsection{Tiempos de Ejecución}
+
+\begin{longtable}{|c|c|c|c|c|}
+\hline
+\textbf{Test} & \textbf{Tiempo Medio (s)} & \textbf{Min (s)} & \textbf{Max (s)} & \textbf{Por Coche (ms)} \\ \hline
+\endfirsthead
+\hline
+\textbf{Test} & \textbf{Tiempo Medio (s)} & \textbf{Min (s)} & \textbf{Max (s)} & \textbf{Por Coche (ms)} \\ \hline
+\endhead
+T1 & 107.31 & 99.19 & 113.41 & 3577.05 \\ \hline
+T2 & 133.55 & 127.68 & 137.66 & 4451.59 \\ \hline
+T3 & 82.97 & 76.17 & 87.74 & 2765.66 \\ \hline
+T4 & 153.47 & 148.35 & 159.85 & 5115.55 \\ \hline
+T5 & 191.88 & 185.35 & 200.31 & 6395.92 \\ \hline
+T6 & 116.05 & 106.33 & 123.28 & 3868.30 \\ \hline
+\caption{Resultados de tiempos de ejecución (tiempos reales × 10)}
+\label{tab:resultados_tiempos}
+\end{longtable}
+
+\subsection{Análisis de Resultados}
+
+\subsubsection{Impacto de la Distribución de Categorías}
+
+Comparando T1, T2 y T3 (misma configuración 6 plazas, 3 mecánicos):
+
+\begin{itemize}
+    \item \textbf{T2 (mayoría A)}: 133.55s - El más lento debido a que los coches A requieren 5s por fase.
+    \item \textbf{T1 (equilibrado)}: 107.31s - Tiempo medio con distribución equilibrada.
+    \item \textbf{T3 (mayoría C)}: 82.97s - El más rápido, los coches C solo requieren 1s por fase.
+\end{itemize}
+
+\textbf{Conclusión}: La distribución de categorías tiene un impacto significativo en el tiempo total. Una mayor proporción de coches categoría A incrementa notablemente el tiempo de procesamiento.
+
+\subsubsection{Impacto de Plazas vs Mecánicos}
+
+Comparando configuraciones:
+
+\begin{itemize}
+    \item \textbf{6 plazas, 3 mecánicos}: Permite más coches en espera, pero limita la reparación.
+    \item \textbf{4 plazas, 4 mecánicos}: Reduce espera pero acelera fase crítica (reparación).
+\end{itemize}
+
+Observación: Con 4 plazas y 4 mecánicos, los tiempos aumentan (T4 vs T1: 153.47s vs 107.31s) porque el cuello de botella se traslada a las plazas disponibles. A pesar de tener más mecánicos, menos coches pueden estar en el sistema simultáneamente.
+
+\subsubsection{Cobertura de Código}
+
+\begin{lstlisting}
+Cobertura total: 47.4%
+\end{lstlisting}
+
+Funciones con 100\% de cobertura:
+\begin{itemize}
+    \item worker
+    \item startPhase
+    \item signInCar, updatePhase, delCar
+    \item newGarage, getCarFromM
+    \item closeChans, sendCar, initPhaseChans, genEvent
+\end{itemize}
+
+Funciones con 0\% de cobertura:
+\begin{itemize}
+    \item main (no se ejecuta en tests)
+    \item logManager (se silencia en tests)
+    \item genCars, randDecimal, genCar (se usan versiones de test)
+\end{itemize}
+
+\textbf{Nota}: La cobertura del 47.4\% es razonable considerando que:
+\begin{enumerate}
+    \item La función \texttt{main()} no se ejecuta en tests.
+    \item El logger se silencia en entorno de test.
+    \item Se utilizan generadores de datos específicos para tests.
+\end{enumerate}
+
+\subsubsection{Race Conditions}
+
+Todos los tests pasaron con \texttt{-race} sin detectar condiciones de carrera:
+
+\begin{lstlisting}
+PASS
+ok  	taller/cliente	787.884s
+\end{lstlisting}
+
+\textbf{Conclusión}: El sistema es thread-safe y no presenta race conditions detectables.
+
+\section{Repositorio y Código Fuente}
+
+El código fuente completo está disponible en:
+
+\begin{center}
+\url{https://github.com/alacoste96/Practica-4-SDIS}
+\end{center}
+
+\subsection{Estructura del Repositorio}
+
+\begin{verbatim}
+Practica4
+├── doc
+│   └── 4_practica_ssdd_dist.pdf
+├── README.md
+├── src
+│   ├── cliente
+│   │   ├── goroutines.go
+│   │   ├── mutex.go
+│   │   ├── taller.go
+│   │   ├── taller_test.go
+│   │   ├── types.go
+│   │   └── utility.go
+│   ├── go.mod
+│   ├── mutua
+│   │   └── mutua.go
+│   └── servidor
+│       └── servidor.go
+└── tests
+    ├── cover.out
+    ├── test_cover.txt
+    ├── test_race.txt
+    └── test_report.txt
+\end{verbatim}
+
+\section{Conclusiones}
+
+\subsection{Logros Principales}
+
+\begin{enumerate}
+    \item \textbf{Implementación exitosa de concurrencia}: Se utilizaron goroutines, canales y primitivas de sincronización de manera efectiva.
+    \item \textbf{Sistema robusto}: Sin race conditions detectadas en tests exhaustivos.
+    \item \textbf{Gestión dinámica de prioridades}: El sistema responde correctamente a cambios de modo en tiempo real.
+    \item \textbf{Arquitectura cliente-servidor funcional}: Comunicación efectiva mediante TCP.
+    \item \textbf{Validación exhaustiva}: Tests comparativos que demuestran el comportamiento del sistema.
+\end{enumerate}
+
+\subsection{Decisiones de Diseño Destacables}
+
+\begin{itemize}
+    \item \textbf{Canal bufferizado como semáforo}: Solución elegante para gestionar plazas sin locks explícitos.
+    \item \textbf{Select anidado para priorización}: Implementa prioridad sin polling activo.
+    \item \textbf{Logger centralizado}: Evita race conditions en stdout.
+    \item \textbf{Atomic Int32 para estado}: Acceso rápido sin locks pesados.
+    \item \textbf{Separación de modos restrictivos y de prioridad}: Permite diferenciar entre entrada y gestión interna.
+\end{itemize}
+
+\subsection{Lecciones Aprendidas}
+
+\begin{enumerate}
+    \item El diseño de sistemas concurrentes requiere planificación cuidadosa de sincronización.
+    \item Los canales de Go son herramientas poderosas pero deben usarse correctamente.
+    \item La gestión de prioridades dinámicas es compleja pero implementable con select.
+    \item Los tests con \texttt{-race} son esenciales para validar seguridad concurrente.
+    \item La reescalación temporal permite tests rápidos sin perder validez.
+\end{enumerate}
+
+\subsection{Posibles Mejoras}
+
+\begin{itemize}
+    \item Implementar persistencia de estado para recuperación tras fallos.
+    \item Añadir métricas en tiempo real (throughput, latencia media, etc.).
+    \item Implementar interfaz gráfica para monitorización.
+    \item Extender tests para cubrir casos extremos y modos adicionales.
+    \item Optimizar gestión de memoria para mayor número de coches.
+\end{itemize}
+
+\section{Referencias}
+
+\begin{itemize}
+    \item Donovan, A. A. A., \& Kernighan, B. W. (2015). \textit{The Go Programming Language}. Addison-Wesley.
+    \item Documentación oficial de Go: \url{https://golang.org/doc/}
+    \item Effective Go: \url{https://golang.org/doc/effective_go}
+    \item Go Concurrency Patterns: \url{https://go.dev/blog/pipelines}
+\end{itemize}
+
+\end{document}
