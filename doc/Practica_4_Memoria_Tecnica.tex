@@ -46,16 +46,6 @@ El proyecto implementa un modelo cliente-servidor donde:
     \item \textbf{Mutua}: Programa externo que envía comandos de cambio de estado al sistema.
 \end{itemize}
 
-\subsection{Objetivos del Proyecto}
-
-\begin{enumerate}
-    \item Implementar un sistema concurrente robusto utilizando Go y sus primitivas de concurrencia.
-    \item Gestionar el flujo de vehículos a través de 4 fases secuenciales con prioridades dinámicas.
-    \item Implementar comunicación cliente-servidor mediante sockets TCP.
-    \item Garantizar la sincronización correcta evitando race conditions.
-    \item Validar el sistema mediante tests exhaustivos.
-\end{enumerate}
-
 \section{Arquitectura del Sistema}
 
 \subsection{Estructura General}
@@ -78,17 +68,15 @@ Adicionalmente, el módulo \texttt{cliente} contiene los siguientes archivos de 
     \item \textbf{taller\_test.go}: Suite de tests para validación del sistema.
 \end{itemize}
 
-\subsection{Diagrama de Arquitectura}
+\subsection{Diagrama de la Arquitectura}
 
 % PLACEHOLDER: Aquí se incluirá el diagrama de arquitectura general
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.9\textwidth]{diagrama_arquitectura.pdf}
-%     \caption{Diagrama de arquitectura del sistema}
-%     \label{fig:arquitectura}
-% \end{figure}
-
-\textbf{Nota}: Insertar aquí el diagrama \texttt{diagrama\_arquitectura.drawio} exportado a PDF.
+ \begin{figure}[H]
+     \centering
+     \includegraphics[width=0.9\textwidth]{../drawio/diagrama_arquitectura.drawio.pdf}
+     \caption{Diagrama de arquitectura del sistema}
+     \label{fig:arquitectura}
+ \end{figure}
 
 \section{Descripción Detallada de Componentes}
 
@@ -216,19 +204,14 @@ C & Carrocería & Baja & 1s + variación \\ \hline
 \section{Diagramas UML}
 
 Esta sección presenta los diagramas UML que ilustran el comportamiento y la estructura del sistema.
-
 \subsection{Diagrama de Secuencia: Flujo Completo de un Coche}
 
-% PLACEHOLDER: Diagrama de secuencia completo
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=\textwidth]{diagrama_secuencia_completo.pdf}
-%     \caption{Diagrama de secuencia: Flujo completo de un coche por las 4 fases}
-%     \label{fig:seq_completo}
-% \end{figure}
-
-\textbf{Nota}: Insertar aquí el diagrama \texttt{diagrama\_secuencia\_completo.drawio} exportado a PDF.
-
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{../drawio/diagrama_secuencia_completo.drawio.png}
+    \caption{Diagrama de secuencia: Flujo completo de un coche por las 4 fases}
+    \label{fig:seq_completo}
+\end{figure}
 Este diagrama muestra la interacción entre:
 \begin{itemize}
     \item Productor
@@ -240,15 +223,12 @@ Este diagrama muestra la interacción entre:
 
 \subsection{Diagrama de Secuencia: Comunicación Cliente-Servidor}
 
-% PLACEHOLDER: Diagrama de comunicación cliente-servidor
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.8\textwidth]{diagrama_secuencia_cliente_servidor.pdf}
-%     \caption{Diagrama de secuencia: Comunicación cliente-servidor}
-%     \label{fig:seq_cliente_servidor}
-% \end{figure}
-
-\textbf{Nota}: Insertar aquí el diagrama \texttt{diagrama\_secuencia\_cliente\_servidor.drawio} exportado a PDF.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../drawio/diagrama_secuencia_cliente_servidor.drawio.pdf}
+    \caption{Diagrama de secuencia: Comunicación cliente-servidor}
+    \label{fig:seq_cliente_servidor}
+\end{figure}
 
 Este diagrama ilustra:
 \begin{itemize}
@@ -260,14 +240,12 @@ Este diagrama ilustra:
 \subsection{Diagrama de Flujo: Gestión de Prioridades}
 
 % PLACEHOLDER: Diagrama de flujo de prioridades
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.7\textwidth]{diagrama_flujo_prioridades.pdf}
-%     \caption{Diagrama de flujo: Lógica de gestión de prioridades}
-%     \label{fig:flujo_prioridades}
-% \end{figure}
-
-\textbf{Nota}: Insertar aquí el diagrama \texttt{diagrama\_flujo\_prioridades.drawio} exportado a PDF.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../drawio/diagrama_flujo_prioridades.drawio.pdf}
+    \caption{Diagrama de flujo: Lógica de gestión de prioridades}
+    \label{fig:flujo_prioridades}
+\end{figure}
 
 Este diagrama muestra el algoritmo de decisión para:
 \begin{itemize}
@@ -279,14 +257,13 @@ Este diagrama muestra el algoritmo de decisión para:
 \subsection{Diagrama de Flujo: Worker de Fase}
 
 % PLACEHOLDER: Diagrama de flujo de worker
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.6\textwidth]{diagrama_flujo_worker.pdf}
-%     \caption{Diagrama de flujo: Comportamiento de un worker}
-%     \label{fig:flujo_worker}
-% \end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{../drawio/diagrama_flujo_worker.drawio.pdf}
+    \caption{Diagrama de flujo: Comportamiento de un worker}
+    \label{fig:flujo_worker}
+\end{figure}
 
-\textbf{Nota}: Insertar aquí el diagrama \texttt{diagrama\_flujo\_worker.drawio} exportado a PDF.
 
 \section{Implementación de Concurrencia}
 
@@ -426,17 +403,17 @@ Cada test se ejecutó 10 iteraciones con semilla aleatoria variable. Los tiempos
 
 \begin{longtable}{|c|c|c|c|c|}
 \hline
-\textbf{Test} & \textbf{Tiempo Medio (s)} & \textbf{Min (s)} & \textbf{Max (s)} & \textbf{Por Coche (ms)} \\ \hline
+\textbf{Test} & \textbf{Tiempo Medio (s)} & \textbf{Min (s)} & \textbf{Max (s)} & \textbf{Por Coche (s)} \\ \hline
 \endfirsthead
 \hline
-\textbf{Test} & \textbf{Tiempo Medio (s)} & \textbf{Min (s)} & \textbf{Max (s)} & \textbf{Por Coche (ms)} \\ \hline
+\textbf{Test} & \textbf{Tiempo Medio (s)} & \textbf{Min (s)} & \textbf{Max (s)} & \textbf{Por Coche (s)} \\ \hline
 \endhead
-T1 & 107.31 & 99.19 & 113.41 & 3577.05 \\ \hline
-T2 & 133.55 & 127.68 & 137.66 & 4451.59 \\ \hline
-T3 & 82.97 & 76.17 & 87.74 & 2765.66 \\ \hline
-T4 & 153.47 & 148.35 & 159.85 & 5115.55 \\ \hline
-T5 & 191.88 & 185.35 & 200.31 & 6395.92 \\ \hline
-T6 & 116.05 & 106.33 & 123.28 & 3868.30 \\ \hline
+T1 & 107.31 & 99.19 & 113.41 & 3.57 \\ \hline
+T2 & 133.55 & 127.68 & 137.66 & 4.45 \\ \hline
+T3 & 82.97 & 76.17 & 87.74 & 2.76 \\ \hline
+T4 & 153.47 & 148.35 & 159.85 & 5.11 \\ \hline
+T5 & 191.88 & 185.35 & 200.31 & 6.39 \\ \hline
+T6 & 116.05 & 106.33 & 123.28 & 3.86 \\ \hline
 \caption{Resultados de tiempos de ejecución (tiempos reales × 10)}
 \label{tab:resultados_tiempos}
 \end{longtable}
@@ -543,20 +520,10 @@ Practica4
 
 \section{Conclusiones}
 
-\subsection{Logros Principales}
-
-\begin{enumerate}
-    \item \textbf{Implementación exitosa de concurrencia}: Se utilizaron goroutines, canales y primitivas de sincronización de manera efectiva.
-    \item \textbf{Sistema robusto}: Sin race conditions detectadas en tests exhaustivos.
-    \item \textbf{Gestión dinámica de prioridades}: El sistema responde correctamente a cambios de modo en tiempo real.
-    \item \textbf{Arquitectura cliente-servidor funcional}: Comunicación efectiva mediante TCP.
-    \item \textbf{Validación exhaustiva}: Tests comparativos que demuestran el comportamiento del sistema.
-\end{enumerate}
-
 \subsection{Decisiones de Diseño Destacables}
 
 \begin{itemize}
-    \item \textbf{Canal bufferizado como semáforo}: Solución elegante para gestionar plazas sin locks explícitos.
+    \item \textbf{Canal bufferizado como semáforo}: Solución para gestionar plazas sin locks explícitos.
     \item \textbf{Select anidado para priorización}: Implementa prioridad sin polling activo.
     \item \textbf{Logger centralizado}: Evita race conditions en stdout.
     \item \textbf{Atomic Int32 para estado}: Acceso rápido sin locks pesados.
@@ -572,16 +539,6 @@ Practica4
     \item Los tests con \texttt{-race} son esenciales para validar seguridad concurrente.
     \item La reescalación temporal permite tests rápidos sin perder validez.
 \end{enumerate}
-
-\subsection{Posibles Mejoras}
-
-\begin{itemize}
-    \item Implementar persistencia de estado para recuperación tras fallos.
-    \item Añadir métricas en tiempo real (throughput, latencia media, etc.).
-    \item Implementar interfaz gráfica para monitorización.
-    \item Extender tests para cubrir casos extremos y modos adicionales.
-    \item Optimizar gestión de memoria para mayor número de coches.
-\end{itemize}
 
 \section{Referencias}
 

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-01-08T17:00:00.000Z" agent="5.0" version="24.0.0" type="device">
+  <diagram name="Secuencia-Completo" id="flujo-completo-coche">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="1654" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Lifelines -->
+        <mxCell id="productor" value="Productor" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="80" width="100" height="800" as="geometry" />
+        </mxCell>
+
+        <mxCell id="garage" value="Garage" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="220" y="80" width="100" height="800" as="geometry" />
+        </mxCell>
+
+        <mxCell id="docPhase" value="Worker Doc" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="360" y="80" width="100" height="800" as="geometry" />
+        </mxCell>
+
+        <mxCell id="repairPhase" value="Worker Repair" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="500" y="80" width="100" height="800" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cleanPhase" value="Worker Clean" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="640" y="80" width="100" height="800" as="geometry" />
+        </mxCell>
+
+        <mxCell id="deliverPhase" value="Worker Deliver" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="780" y="80" width="100" height="800" as="geometry" />
+        </mxCell>
+
+        <mxCell id="logger" value="Logger" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="920" y="80" width="100" height="800" as="geometry" />
+        </mxCell>
+
+        <!-- Flujo de mensajes -->
+        <!-- Esperar plaza libre -->
+        <mxCell id="msg1" value="&lt;-freeSlots (esperar plaza)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="productor" target="garage">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="130" y="180" as="sourcePoint" />
+            <mxPoint x="270" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Obtener coche de cola -->
+        <mxCell id="msg2" value="getCarFromQ()" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="productor" target="garage">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="130" y="220" as="sourcePoint" />
+            <mxPoint x="270" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Registrar coche -->
+        <mxCell id="msg3" value="signInCar(c)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="productor" target="garage">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="130" y="260" as="sourcePoint" />
+            <mxPoint x="270" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Enviar a fase 1 -->
+        <mxCell id="msg4" value="sendCar(docChans, c)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="productor" target="docPhase">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="130" y="300" as="sourcePoint" />
+            <mxPoint x="410" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Fase 1: Documentación -->
+        <mxCell id="msg5" value="getCar(chans)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="docPhase" target="docPhase">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="410" y="340" as="sourcePoint" />
+            <mxPoint x="450" y="340" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="480" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg6" value="updatePhase(id, DOCPHASE)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="docPhase" target="garage">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="410" y="380" as="sourcePoint" />
+            <mxPoint x="270" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg7" value="genEvent(c, &quot;entra&quot;)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="docPhase" target="logger">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="410" y="420" as="sourcePoint" />
+            <mxPoint x="970" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="note1" value="Sleep(duration)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;size=10;" vertex="1" parent="1">
+          <mxGeometry x="360" y="450" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="msg8" value="genEvent(c, &quot;sale&quot;)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="docPhase" target="logger">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="410" y="500" as="sourcePoint" />
+            <mxPoint x="970" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg9" value="sendCar(repChans, c)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="docPhase" target="repairPhase">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="460" y="540" as="sourcePoint" />
+            <mxPoint x="550" y="540" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Fase 2: Reparación (similar) -->
+        <mxCell id="msg10" value="getCar(chans)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="repairPhase" target="repairPhase">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="550" y="580" as="sourcePoint" />
+            <mxPoint x="590" y="580" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="620" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg11" value="genEvent(c, &quot;entra&quot;)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="repairPhase" target="logger">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="550" y="620" as="sourcePoint" />
+            <mxPoint x="970" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="note2" value="Sleep(duration)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;size=10;" vertex="1" parent="1">
+          <mxGeometry x="500" y="650" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="msg12" value="sendCar(cleanChans, c)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="repairPhase" target="cleanPhase">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="600" y="700" as="sourcePoint" />
+            <mxPoint x="690" y="700" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Fase 3: Limpieza -->
+        <mxCell id="msg13" value="getCar(chans)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="cleanPhase" target="cleanPhase">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="690" y="740" as="sourcePoint" />
+            <mxPoint x="730" y="740" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="760" y="740" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg14" value="sendCar(deliverChans, c)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="cleanPhase" target="deliverPhase">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="740" y="780" as="sourcePoint" />
+            <mxPoint x="830" y="780" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Fase 4: Entrega -->
+        <mxCell id="msg15" value="getCar(chans)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="deliverPhase" target="deliverPhase">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="830" y="820" as="sourcePoint" />
+            <mxPoint x="870" y="820" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="900" y="820" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="note3" value="Sleep(duration)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;size=10;" vertex="1" parent="1">
+          <mxGeometry x="780" y="850" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="msg16" value="delCar(id)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="deliverPhase" target="garage">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="830" y="900" as="sourcePoint" />
+            <mxPoint x="270" y="900" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg17" value="freeSlots &lt;- struct{}" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="deliverPhase" target="garage">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="830" y="940" as="sourcePoint" />
+            <mxPoint x="270" y="940" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg18" value="wg.Done()" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="deliverPhase" target="garage">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="830" y="980" as="sourcePoint" />
+            <mxPoint x="270" y="980" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

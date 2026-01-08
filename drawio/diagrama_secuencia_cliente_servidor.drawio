@@ -1,147 +1,153 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<mxfile host="app.diagrams.net" modified="2026-01-08T17:00:00.000Z" agent="5.0" version="24.0.0" type="device">
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.2.5 Chrome/138.0.7204.251 Electron/37.6.1 Safari/537.36" version="28.2.5">
   <diagram name="Cliente-Servidor" id="cliente-servidor">
-    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="1398" dy="829" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-
-        <!-- Título -->
-        <mxCell id="titulo" value="Comunicación Cliente-Servidor" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="350" y="20" width="300" height="30" as="geometry" />
+        <mxCell id="titulo" value="Comunicación Cliente-Servidor" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="350" y="40" width="300" height="30" as="geometry" />
         </mxCell>
-
-        <!-- Lifelines -->
-        <mxCell id="mutua" value="Mutua" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+        <mxCell id="mutua" value="Mutua" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" parent="1" vertex="1">
           <mxGeometry x="150" y="80" width="100" height="600" as="geometry" />
         </mxCell>
-
-        <mxCell id="servidor" value="Servidor" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+        <mxCell id="servidor" value="Servidor" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" parent="1" vertex="1">
           <mxGeometry x="450" y="80" width="100" height="600" as="geometry" />
         </mxCell>
-
-        <mxCell id="taller" value="Taller (Cliente)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
-          <mxGeometry x="750" y="80" width="120" height="600" as="geometry" />
-        </mxCell>
-
-        <!-- Activation boxes -->
-        <mxCell id="act1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="servidor">
+        <mxCell id="act1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" parent="servidor" vertex="1">
           <mxGeometry x="45" y="80" width="10" height="480" as="geometry" />
         </mxCell>
-
-        <!-- Inicio: Servidor escucha -->
-        <mxCell id="note1" value="Servidor escucha en :8000" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;size=10;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
-          <mxGeometry x="300" y="120" width="130" height="50" as="geometry" />
-        </mxCell>
-
-        <!-- Taller se conecta -->
-        <mxCell id="msg1" value="Dial(&quot;tcp&quot;, &quot;localhost:8000&quot;)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=1;entryY=0;" edge="1" parent="1" source="taller" target="act1">
-          <mxGeometry width="80" relative="1" as="geometry">
-            <mxPoint x="810" y="200" as="sourcePoint" />
-            <mxPoint x="505" y="200" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-
-        <mxCell id="msg2" value="handleConn(conn)" style="html=1;verticalAlign=bottom;endArrow=block;dashed=1;" edge="1" parent="1" source="servidor" target="servidor">
-          <mxGeometry width="80" relative="1" as="geometry">
-            <mxPoint x="505" y="240" as="sourcePoint" />
-            <mxPoint x="545" y="240" as="targetPoint" />
+        <mxCell id="msg5" value="Conexión establecida" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;" parent="servidor" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="50" y="120" as="sourcePoint" />
+            <mxPoint x="-250" y="120" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="575" y="240" />
+              <mxPoint x="-99.5" y="120" />
             </Array>
           </mxGeometry>
         </mxCell>
-
-        <mxCell id="msg3" value="Conexión establecida" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;" edge="1" parent="1" source="servidor" target="taller">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="505" y="280" as="sourcePoint" />
-            <mxPoint x="810" y="280" as="targetPoint" />
+        <mxCell id="msg8" value="broadcaster() envía a todos" style="html=1;verticalAlign=bottom;endArrow=block;dashed=1;exitX=0.8;exitY=0.315;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1.2;entryY=0.415;entryDx=0;entryDy=0;entryPerimeter=0;" parent="servidor" source="act1" target="act1" edge="1">
+          <mxGeometry x="-0.1022" y="30" width="80" relative="1" as="geometry">
+            <mxPoint x="49.5" y="90" as="sourcePoint" />
+            <mxPoint x="49.5" y="390" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="70" y="230" />
+              <mxPoint x="100" y="230" />
+              <mxPoint x="100" y="260" />
+              <mxPoint x="100" y="280" />
+            </Array>
+            <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-
-        <!-- Mutua se conecta -->
-        <mxCell id="msg4" value="Dial(&quot;tcp&quot;, &quot;localhost:8000&quot;)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="mutua" target="servidor">
+        <mxCell id="msg2" value="handleConn(conn)" style="html=1;verticalAlign=bottom;endArrow=block;dashed=1;entryX=0.9;entryY=0.954;entryDx=0;entryDy=0;entryPerimeter=0;" parent="servidor" source="servidor" target="act1" edge="1">
+          <mxGeometry x="-0.5684" y="30" width="80" relative="1" as="geometry">
+            <mxPoint x="59" y="100" as="sourcePoint" />
+            <mxPoint x="59" y="380" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="100" y="120" />
+              <mxPoint x="140" y="120" />
+              <mxPoint x="140" y="380" />
+              <mxPoint x="140" y="540" />
+              <mxPoint x="100" y="540" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="taller" value="Taller (Cliente)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" parent="1" vertex="1">
+          <mxGeometry x="750" y="80" width="120" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="note1" value="&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;Servidor escucha en :8000&lt;/font&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;size=10;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="310" y="80" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="msg1" value="Dial(&quot;tcp&quot;, &quot;localhost:8000&quot;)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=1;entryY=0;" parent="1" source="taller" target="act1" edge="1">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="810" y="200" as="sourcePoint" />
+            <mxPoint x="505" y="200" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="630" y="160" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg3" value="Conexión establecida" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;" parent="1" edge="1">
+          <mxGeometry x="-0.029" relative="1" as="geometry">
+            <mxPoint x="499.5" y="180" as="sourcePoint" />
+            <mxPoint x="809.5" y="180" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="690" y="180" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg4" value="Dial(&quot;tcp&quot;, &quot;localhost:8000&quot;)" style="html=1;verticalAlign=bottom;endArrow=block;" parent="1" source="mutua" target="servidor" edge="1">
           <mxGeometry width="80" relative="1" as="geometry">
             <mxPoint x="200" y="340" as="sourcePoint" />
             <mxPoint x="495" y="340" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="360" y="170" />
+            </Array>
           </mxGeometry>
         </mxCell>
-
-        <mxCell id="msg5" value="Conexión establecida" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;" edge="1" parent="1" source="servidor" target="mutua">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="495" y="380" as="sourcePoint" />
-            <mxPoint x="200" y="380" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-
-        <!-- Mutua envía comando -->
-        <mxCell id="msg6" value="Send2conn(dst, getRand())" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="mutua" target="servidor">
+        <mxCell id="msg6" value="Send2conn(dst, getRand())" style="html=1;verticalAlign=bottom;endArrow=block;" parent="1" edge="1">
           <mxGeometry width="80" relative="1" as="geometry">
-            <mxPoint x="200" y="440" as="sourcePoint" />
-            <mxPoint x="495" y="440" as="targetPoint" />
+            <mxPoint x="200" y="220" as="sourcePoint" />
+            <mxPoint x="500" y="220" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="330.5" y="220" />
+              <mxPoint x="370.5" y="220" />
+              <mxPoint x="400.5" y="220" />
+            </Array>
           </mxGeometry>
         </mxCell>
-
-        <mxCell id="note2" value="Ejemplo: modo=4" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;size=10;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
-          <mxGeometry x="300" y="430" width="100" height="40" as="geometry" />
+        <mxCell id="note2" value="&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;Ejemplo: modo=4&lt;/font&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;size=10;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="310" y="230" width="100" height="40" as="geometry" />
         </mxCell>
-
-        <!-- Servidor broadcast -->
-        <mxCell id="msg7" value="messages &lt;- &quot;4&quot;" style="html=1;verticalAlign=bottom;endArrow=block;dashed=1;" edge="1" parent="1" source="servidor" target="servidor">
+        <mxCell id="msg7" value="messages &lt;- &quot;4&quot;" style="html=1;verticalAlign=bottom;endArrow=block;dashed=1;" parent="1" source="servidor" target="servidor" edge="1">
           <mxGeometry width="80" relative="1" as="geometry">
             <mxPoint x="505" y="480" as="sourcePoint" />
             <mxPoint x="545" y="480" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="575" y="480" />
+              <mxPoint x="550" y="230" />
+              <mxPoint x="550" y="290" />
+              <mxPoint x="530" y="290" />
             </Array>
+            <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-
-        <mxCell id="msg8" value="broadcaster() envía a todos" style="html=1;verticalAlign=bottom;endArrow=block;dashed=1;" edge="1" parent="1" source="servidor" target="servidor">
-          <mxGeometry width="80" relative="1" as="geometry">
-            <mxPoint x="505" y="520" as="sourcePoint" />
-            <mxPoint x="545" y="520" as="targetPoint" />
-            <Array as="points">
-              <mxPoint x="575" y="520" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-
-        <!-- Taller recibe -->
-        <mxCell id="msg9" value="conn.Read(buf)" style="html=1;verticalAlign=bottom;endArrow=block;" edge="1" parent="1" source="servidor" target="taller">
+        <mxCell id="msg9" value="conn.Read(buf)" style="html=1;verticalAlign=bottom;endArrow=block;" parent="1" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="505" y="560" as="sourcePoint" />
-            <mxPoint x="810" y="560" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-
-        <mxCell id="msg10" value="&quot;4&quot;" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;" edge="1" parent="1" source="servidor" target="taller">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="505" y="590" as="sourcePoint" />
-            <mxPoint x="810" y="590" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-
-        <!-- Taller actualiza estado -->
-        <mxCell id="msg11" value="g.sts.Store(int32(4))" style="html=1;verticalAlign=bottom;endArrow=block;dashed=1;" edge="1" parent="1" source="taller" target="taller">
-          <mxGeometry width="80" relative="1" as="geometry">
-            <mxPoint x="810" y="630" as="sourcePoint" />
-            <mxPoint x="850" y="630" as="targetPoint" />
+            <mxPoint x="499.5" y="370" as="sourcePoint" />
+            <mxPoint x="809.5" y="370" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="880" y="630" />
+              <mxPoint x="690" y="370" />
+              <mxPoint x="730" y="370" />
             </Array>
           </mxGeometry>
         </mxCell>
-
-        <mxCell id="note3" value="Estado cambiado a:&#xa;Prioridad Categoría A" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;size=10;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
-          <mxGeometry x="640" y="610" width="140" height="50" as="geometry" />
+        <mxCell id="msg10" value="&quot;4&quot;" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="500" y="390" as="sourcePoint" />
+            <mxPoint x="810" y="390" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
-
-        <!-- Nota final -->
-        <mxCell id="note4" value="Los workers adaptan automáticamente&#xa;las prioridades según g.sts.Load()" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;size=10;fillColor=#fff2cc;strokeColor=#d6b656;align=left;" vertex="1" parent="1">
-          <mxGeometry x="100" y="700" width="250" height="60" as="geometry" />
+        <mxCell id="msg11" value="g.sts.Store(int32(4))" style="html=1;verticalAlign=bottom;endArrow=block;dashed=1;" parent="1" source="taller" target="taller" edge="1">
+          <mxGeometry x="0.0901" y="20" width="80" relative="1" as="geometry">
+            <mxPoint x="830" y="150" as="sourcePoint" />
+            <mxPoint x="830" y="650" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="820" y="400" />
+              <mxPoint x="840" y="400" />
+              <mxPoint x="840" y="420" />
+              <mxPoint x="840" y="450" />
+              <mxPoint x="830" y="450" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
         </mxCell>
-
+        <mxCell id="note3" value="&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;Estado cambiado a:&lt;br&gt;Prioridad Categoría A&lt;/font&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;size=10;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+          <mxGeometry x="660" y="460" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="note4" value="&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;Los workers adaptan automáticamente&lt;br&gt;las prioridades según g.sts.Load()&lt;/font&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;size=10;fillColor=#fff2cc;strokeColor=#d6b656;align=left;" parent="1" vertex="1">
+          <mxGeometry x="820" y="460" width="250" height="60" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
