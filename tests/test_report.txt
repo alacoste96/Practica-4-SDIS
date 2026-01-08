@@ -1,0 +1,28 @@
+=== RUN   TestComparativasTiempo
+=== RUN   TestComparativasTiempo/T1_A10_B10_C10_P6_M3
+    taller_test.go:201: Iteraciones: 10 | Coches: 30 (A=10,B=10,C=10) | Plazas=6 Mecánicos=3 | Modo=4
+    taller_test.go:204: Total medio: 10.731164663s | min=9.919279247s max=11.341050776s | medio por coche (aprox): 357.705488ms
+=== RUN   TestComparativasTiempo/T2_A20_B5_C5_P6_M3
+    taller_test.go:201: Iteraciones: 10 | Coches: 30 (A=20,B=5,C=5) | Plazas=6 Mecánicos=3 | Modo=4
+    taller_test.go:204: Total medio: 13.354772736s | min=12.767567062s max=13.766329298s | medio por coche (aprox): 445.159091ms
+=== RUN   TestComparativasTiempo/T3_A5_B5_C20_P6_M3
+    taller_test.go:201: Iteraciones: 10 | Coches: 30 (A=5,B=5,C=20) | Plazas=6 Mecánicos=3 | Modo=4
+    taller_test.go:204: Total medio: 8.296983719s | min=7.617082675s max=8.773594147s | medio por coche (aprox): 276.566123ms
+=== RUN   TestComparativasTiempo/T4_A10_B10_C10_P4_M4
+    taller_test.go:201: Iteraciones: 10 | Coches: 30 (A=10,B=10,C=10) | Plazas=4 Mecánicos=4 | Modo=4
+    taller_test.go:204: Total medio: 15.346646031s | min=14.835098938s max=15.985380942s | medio por coche (aprox): 511.554867ms
+=== RUN   TestComparativasTiempo/T5_A20_B5_C5_P4_M4
+    taller_test.go:201: Iteraciones: 10 | Coches: 30 (A=20,B=5,C=5) | Plazas=4 Mecánicos=4 | Modo=4
+    taller_test.go:204: Total medio: 19.18776503s | min=18.534536283s max=20.031364549s | medio por coche (aprox): 639.592167ms
+=== RUN   TestComparativasTiempo/T6_A5_B5_C20_P4_M4
+    taller_test.go:201: Iteraciones: 10 | Coches: 30 (A=5,B=5,C=20) | Plazas=4 Mecánicos=4 | Modo=4
+    taller_test.go:204: Total medio: 11.604914536s | min=10.632792195s max=12.327684855s | medio por coche (aprox): 386.830484ms
+--- PASS: TestComparativasTiempo (785.23s)
+    --- PASS: TestComparativasTiempo/T1_A10_B10_C10_P6_M3 (107.31s)
+    --- PASS: TestComparativasTiempo/T2_A20_B5_C5_P6_M3 (133.55s)
+    --- PASS: TestComparativasTiempo/T3_A5_B5_C20_P6_M3 (82.97s)
+    --- PASS: TestComparativasTiempo/T4_A10_B10_C10_P4_M4 (153.47s)
+    --- PASS: TestComparativasTiempo/T5_A20_B5_C5_P4_M4 (191.88s)
+    --- PASS: TestComparativasTiempo/T6_A5_B5_C20_P4_M4 (116.05s)
+PASS
+ok  	taller/cliente	785.229s
