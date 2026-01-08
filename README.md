@@ -1,9 +1,7 @@
 # Práctica 4 SDIS - Documentación del Proyecto
 
-## 📋 Archivos Generados
-
-### 1. Documento Principal LaTeX
-- **`Practica_4_Memoria_Tecnica.tex`**: Memoria técnica completa del proyecto
+### 1. Documento Principal PDF
+- **`Practica_4_alacoste_SSOO_dist.pdf`**: Memoria técnica completa del proyecto
 
 ### 2. Diagramas UML en formato Draw.io
 Todos los diagramas están en formato `.drawio` editable:
@@ -33,66 +31,12 @@ Todos los diagramas están en formato `.drawio` editable:
    - Ciclo de vida: recibir → procesar → enviar
    - Gestión de fase de entrega
 
-### 3. Análisis de Tests
-- **`test_analysis.json`**: Resultados procesados de los tests
 
----
-
-## 🚀 Pasos para Completar la Documentación
-
-### Paso 1: Editar Diagramas en Draw.io
-
-1. Ve a https://app.diagrams.net (o https://draw.io)
-2. Abre cada archivo `.drawio`:
-   - File → Open from... → Device
-   - Selecciona el archivo correspondiente
-3. Edita el diagrama según tus necesidades:
-   - Ajusta posiciones de elementos
-   - Modifica textos y etiquetas
-   - Cambia colores si lo deseas
-   - Añade o elimina componentes
-
-### Paso 2: Exportar Diagramas a PDF
-
-Para cada diagrama editado:
-
-1. En Draw.io: **File → Export as → PDF**
-2. Configuración recomendada:
-   - ✅ Include a copy of my diagram (para poder reabrirlo)
-   - ✅ All Pages
-   - Calidad: 100%
-3. Guarda con los nombres exactos:
-   - `diagrama_arquitectura.pdf`
-   - `diagrama_secuencia_completo.pdf`
-   - `diagrama_secuencia_cliente_servidor.pdf`
-   - `diagrama_flujo_prioridades.pdf`
-   - `diagrama_flujo_worker.pdf`
-
-### Paso 3: Colocar PDFs en la Carpeta del Proyecto
-
-Coloca todos los PDFs exportados en la **misma carpeta** que el archivo `.tex`
-
-### Paso 4: Compilar el Documento LaTeX
-
-```bash
-# Primera compilación (genera referencias)
-pdflatex Practica_4_Memoria_Tecnica.tex
-
-# Segunda compilación (actualiza índice y referencias)
-pdflatex Practica_4_Memoria_Tecnica.tex
-```
-
-**Resultado**: `Practica_4_Memoria_Tecnica.pdf`
-
----
-
-## 📊 Estructura del Documento LaTeX
+## Estructura del Documento PDF
 
 La memoria técnica incluye:
 
 ### 1. Introducción
-- Objetivos del proyecto
-- Contexto y requisitos
 
 ### 2. Arquitectura del Sistema
 - Estructura general
@@ -127,19 +71,17 @@ La memoria técnica incluye:
 - Análisis del impacto de categorías
 - Análisis de plazas vs mecánicos
 - Cobertura de código: 47.4%
-- Race conditions: ✅ Ninguna detectada
+- Race conditions: Ninguna detectada
 
 ### 7. Conclusiones
-- Logros principales
 - Decisiones de diseño
 - Lecciones aprendidas
-- Mejoras futuras
 
 ### 8. Referencias
 
 ---
 
-## 🎯 Detalles Importantes del Código
+## Detalles Importantes del Código
 
 ### Modos de Operación Explicados
 
@@ -185,129 +127,7 @@ La memoria técnica incluye:
 - 4 plazas + 4 mecánicos es más lento que 6 plazas + 3 mecánicos
 - El cuello de botella varía según la configuración
 
----
-
-## 🛠️ Requisitos del Sistema
-
-### Para Editar Diagramas
-- Navegador web moderno (Chrome, Firefox, Edge, Safari)
-- Conexión a internet (para https://app.diagrams.net)
-
-### Para Compilar LaTeX
-- Distribución LaTeX:
-  - **Windows**: MiKTeX o TeX Live
-  - **macOS**: MacTeX
-  - **Linux**: TeX Live
-- Paquetes requeridos (normalmente incluidos):
-  - `babel`, `graphicx`, `hyperref`, `listings`
-  - `xcolor`, `geometry`, `float`, `longtable`, `booktabs`
-
-### Alternativa Online para LaTeX
-Si no tienes LaTeX instalado, usa **Overleaf**:
-1. Ve a https://www.overleaf.com
-2. Crea una cuenta gratuita
-3. Crea un nuevo proyecto
-4. Sube el archivo `.tex` y los PDFs de los diagramas
-5. Compila directamente en el navegador
-
----
-
-## 📁 Estructura Recomendada del Proyecto
-
-```
-Practica4/
-├── doc/
-│   ├── 4_practica_ssdd_dist.pdf
-│   ├── Practica_4_Memoria_Tecnica.tex      ← Documento LaTeX
-│   ├── Practica_4_Memoria_Tecnica.pdf      ← PDF generado
-│   ├── diagrama_arquitectura.drawio
-│   ├── diagrama_arquitectura.pdf
-│   ├── diagrama_secuencia_completo.drawio
-│   ├── diagrama_secuencia_completo.pdf
-│   ├── diagrama_secuencia_cliente_servidor.drawio
-│   ├── diagrama_secuencia_cliente_servidor.pdf
-│   ├── diagrama_flujo_prioridades.drawio
-│   ├── diagrama_flujo_prioridades.pdf
-│   ├── diagrama_flujo_worker.drawio
-│   └── diagrama_flujo_worker.pdf
-├── README.md
-├── src/
-│   ├── cliente/
-│   │   ├── goroutines.go
-│   │   ├── mutex.go
-│   │   ├── taller.go
-│   │   ├── taller_test.go
-│   │   ├── types.go
-│   │   └── utility.go
-│   ├── go.mod
-│   ├── mutua/
-│   │   └── mutua.go
-│   └── servidor/
-│       └── servidor.go
-└── tests/
-    ├── cover.out
-    ├── test_cover.txt
-    ├── test_race.txt
-    └── test_report.txt
-```
-
----
-
-## 💡 Consejos para los Diagramas
-
-### Diagrama de Arquitectura
-- Ajusta el tamaño de las cajas según la cantidad de texto
-- Verifica que las flechas de conexión no se superpongan
-- Usa colores consistentes para cada tipo de componente
-
-### Diagramas de Secuencia
-- Asegúrate de que las lifelines estén verticalmente alineadas
-- Las flechas deben ser claras y no cruzarse innecesariamente
-- Los mensajes deben estar en orden cronológico de arriba a abajo
-
-### Diagramas de Flujo
-- Verifica que todas las decisiones (rombos) tengan 2+ salidas
-- Asegúrate de que el flujo sea fácil de seguir
-- Usa colores para diferenciar tipos de operaciones
-
----
-
-## ✅ Checklist Final
-
-Antes de entregar, verifica:
-
-- [ ] Todos los diagramas .drawio están editados y finalizados
-- [ ] Todos los diagramas están exportados a PDF
-- [ ] Los PDFs tienen los nombres exactos especificados
-- [ ] El documento LaTeX compila sin errores
-- [ ] Todas las figuras aparecen correctamente en el PDF
-- [ ] El índice está completo y correcto
-- [ ] Los datos de los tests coinciden con tus resultados
-- [ ] El enlace al repositorio GitHub está actualizado
-- [ ] Tu nombre de usuario aparece en el documento
-- [ ] El documento final está en formato PDF
-
----
-
-## 📞 Notas Adicionales
-
-### Repositorio GitHub
-URL actual: https://github.com/alacoste96/Practica-4-SDIS
-
-### Formato de Entrega
-Según el enunciado, el archivo debe llamarse:
-- `Practica_4_[tu_nombre_usuario]_SSOO_dist.pdf`
-
-### Contenido Mínimo según Enunciado
-✅ Descripción técnica con diagramas UML
-✅ Diagramas de secuencia
-✅ Código fuente o link a repositorio
-✅ Métricas de tests
-✅ Comparativas de rendimiento
-
----
-
-## 🎓 Información del Proyecto
+## Información del Proyecto
 
 - **Asignatura**: Sistemas Distribuidos
 - **Grado**: Ingeniería Telemática
@@ -316,11 +136,3 @@ Según el enunciado, el archivo debe llamarse:
 - **Tema**: Sistema de gestión de taller con concurrencia
 
 ---
-
-**¡Mucha suerte con tu entrega! 🚀**
-
-Si encuentras algún problema al compilar o editar, revisa:
-1. Que todos los archivos estén en la carpeta correcta
-2. Que los nombres de archivo coincidan exactamente
-3. Que tu instalación de LaTeX esté completa
-4. Los logs de compilación para identificar errores específicos
